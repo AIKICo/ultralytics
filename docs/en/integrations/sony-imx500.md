@@ -41,7 +41,7 @@ Export an Ultralytics YOLOv8 model to IMX500 format and run inference with the e
 
 !!! note
 
-    Here we perform inference just to make sure the model works as expected. However, for deployment and inference on the Raspberry Pi AI Camera, please jump to [Using IMX500 Export in Deployment](#using-imx500-export-in-deployment) section.
+    IMX export is currently only supported for the YOLOv8n model. Here we perform inference just to make sure the model works as expected. However, for deployment and inference on the Raspberry Pi AI Camera, please jump to [Using IMX500 Export in Deployment](#using-imx500-export-in-deployment) section.
 
 !!! example
 
@@ -89,11 +89,16 @@ yolov8n_imx_model
 
 When exporting a model to IMX500 format, you can specify various arguments:
 
-| Key      | Value  | Description                                              |
-| -------- | ------ | -------------------------------------------------------- |
-| `format` | `imx`  | Format to export to (imx)                                |
-| `int8`   | `True` | Enable INT8 quantization for the model (default: `True`) |
-| `imgsz`  | `640`  | Image size for the model input (default: `640`)          |
+| Key      | Value        | Description                                                    |
+| -------- | ------------ | -------------------------------------------------------------- |
+| `format` | `imx`        | Format to export to (imx)                                      |
+| `int8`   | `True`       | Enable INT8 quantization for the model (default: `True`)       |
+| `imgsz`  | `640`        | Image size for the model input (default: `640`)                |
+| `data`   | `coco8.yaml` | Path to the dataset configuration file (default: `coco8.yaml`) |
+
+!!! note
+
+    When using `data` argument for quantization, please check [Dataset Guide](https://docs.ultralytics.com/datasets/detect) to learn more about the dataset format.
 
 ## Using IMX500 Export in Deployment
 
@@ -153,7 +158,7 @@ The above will generate a `network.rpk` file inside the specified output folder.
 Step 2: Clone `picamera2` repository, install it and navigate to the imx500 examples
 
 ```bash
-git clone -b next https://github.com/raspberrypi/picamera2
+git clone https://github.com/raspberrypi/picamera2
 cd picamera2
 pip install -e .  --break-system-packages
 cd examples/imx500
@@ -162,7 +167,7 @@ cd examples/imx500
 Step 3: Run YOLOv8 object detection, using the labels.txt file that has been generated during the IMX500 export.
 
 ```bash
-python imx500_object_detection_demo.py --model <path to network.rpk> --fps 25 --bbox-normalization --ignore-dash-labels --bbox-order xy –labels <path to labels.txt>
+python imx500_object_detection_demo.py --model <path to network.rpk> --fps 25 --bbox-normalization --ignore-dash-labels --bbox-order xy --labels <path to labels.txt>
 ```
 
 Then you will be able to see live inference output as follows
@@ -314,7 +319,7 @@ After exporting to IMX500 format:
 2. Clone and install picamera2:
 
     ```bash
-    git clone -b next https://github.com/raspberrypi/picamera2
+    git clone https://github.com/raspberrypi/picamera2
     cd picamera2 && pip install -e . --break-system-packages
     ```
 
